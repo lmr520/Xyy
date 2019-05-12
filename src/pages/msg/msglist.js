@@ -1,10 +1,11 @@
 import React from 'react';
-import { Image, Platform, StyleSheet, Text, View, ScrollView, TouchableOpacity, AsyncStorage, Animated, AppRegistry, TouchableHighlight, Dimensions, ListView, InteractionManager } from 'react-native';
+import { Image, Platform, StyleSheet, Text, View, ScrollView, TouchableOpacity, AsyncStorage, Animated, AppRegistry, TouchableHighlight, Dimensions, ListView, InteractionManager,SwipeableFlatList} from 'react-native';
 import { Card, ListItem, Button, Badge, Avatar, withBadge, SocialIcon, Header, SearchBar, Divider, Overlay, Input } from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import { red } from 'ansi-colors';
 import img_arr from '../../config/imgarr';
+import { LargeList } from "react-native-largelist-v3";
 import { ScaleSize } from 'react-native-scale-size';
 const list = [
     {
@@ -81,12 +82,15 @@ export default class msglist extends React.Component {
             sectionListData: list,
             renderPlaceholderOnly: true
         };
+       
 
         this.rowSwipeAnimatedValues = {};
         Array(20).fill('').forEach((_, i) => {
             this.rowSwipeAnimatedValues[`${i}`] = new Animated.Value(0);
         });
     }
+    _sectionCount = 10;
+    _rowCount =10;
     closeRow(rowMap, rowKey) {
         if (rowMap[rowKey]) {
             rowMap[rowKey].closeRow();
@@ -118,7 +122,18 @@ export default class msglist extends React.Component {
         const { key, value } = swipeData;
         this.rowSwipeAnimatedValues[key].setValue(Math.abs(value));
     }
-
+ //侧滑菜单渲染
+ getQuickActions=()=>{
+    return <View style={styles.quickAContent}>
+                <TouchableHighlight
+                    onPress={()=>alert("确认删除？")}
+                >
+                    <View style={styles.quick}>
+                        <Text style={styles.delete}>删除</Text>
+                    </View>
+                </TouchableHighlight>
+          </View>
+};
     static navigationOptions = ({ navigation }) => {
         return {
             headerLeft: (
@@ -193,12 +208,20 @@ export default class msglist extends React.Component {
             </View>
         );
     }
-
+   
     render() {
         const { search } = this.state;
         const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
         if (this.state.renderPlaceholderOnly) {
             return this._renderPlaceholderView();
+        }
+        const data = [];
+        for (let section = 0; section < this._sectionCount; ++section) {
+          const sContent = { items: [] };
+          for (let row = 0; row < this._rowCount; ++row) {
+            sContent.items.push(row);
+          }
+          data.push(sContent);
         }
 
         /* 2. Read the params from the navigation state */
@@ -243,11 +266,76 @@ export default class msglist extends React.Component {
                     lightTheme={ true }
                     clearIcon={ { icon: 'menu', color: 'gray' } }
                 />
+                 {/* <View>
+                 <SwipeableFlatList
+                    //1数据的获取和渲染
+                    data={this.state.listViewData}
+                    renderItem={(data) =>  
+                     <View style={styles.item2}>
+                                           <TouchableHighlight
+        onPress={ this.tomsg }
+        style={ styles.rowFront }
+        underlayColor={ '#AAA' }
+    >
+        <View>
+            <ListItem
+                style={ { width: ScaleSize(380), height: ScaleSize(70) } }
+                subtitle={
+                    <View style={ styles.subtitleView }>
+                        <View style={ { width: Dimensions.get('window').width * 4 / 6 } }>
+                            <Text style={ { fontSize: 12, top: ScaleSize(6) } }>{ data.item.subtitle }</Text>
+                        </View>
+                        <View style={ { width: Dimensions.get('window').width / 6, flexDirection: "column", right: ScaleSize(10), bottom: ScaleSize(20), alignItems: 'center' } }>
+                            <Text style={ styles.ratingText }>17:36</Text>
+                            <Badge value={ 3 } textStyle={ { color: 'orange' } } containerStyle={ { top: ScaleSize(4) } }></Badge>
+
+                        </View>
+                    </View>
+
+                }
+                // rightTitleStyle={style={   marginTop:-20,
+                //     marginRight:-20,  justifyContent: 'right',
+                //     alignItems: 'right',}}
+                key={ data.key }
+                leftAvatar={ { source: data.item.img } }
+                //   rightAvatar={ <MaterialCommunityIcons
+                //     name='greater-than'
+                //     color='#f50'
+                //     backgroundColor="#cccfff"
+                //     size={ 16 }
+                //      />}
+                title={ data.item.name }
+            />
+        </View>
+    </TouchableHighlight>
+                                           
+                                           
+                                           
+                                            </View>
+                                            
+                                        
+                                        
+                                        }
+
+                    //2创建侧滑菜单
+                    renderQuickActions={()=>this.getQuickActions()}//创建侧滑菜单
+                    maxSwipeDistance={80}//可展开（滑动）的距离
+                   // bounceFirstRowOnMount={false}//进去的时候不展示侧滑效果
+                />
+                     
+ <LargeList
+        data={ data }
+        heightForSection={ () => 0}
+        renderSection={() => null}
+        heightForIndexPath={ () =>400}
+        renderIndexPath={ this._renderIndexPath }
+      />
+      </View> */}
                 {
                     this.state.listType === '消息' &&
 
                     <SwipeListView
-                        dataSource={ this.ds.cloneWithRows(this.state.listViewData) }
+                        dataSource={ this.ds.cloneWithRows(list) }
                         renderRow={ data => (
                             <TouchableHighlight
                                 onPress={ this.tomsg }
@@ -306,7 +394,7 @@ export default class msglist extends React.Component {
                     this.state.listType === '通知' &&
 
                     <SwipeListView
-                        dataSource={ this.ds.cloneWithRows(this.state.listViewData) }
+                        dataSource={ this.ds.cloneWithRows(list) }
                         renderRow={ data => (
                             <TouchableHighlight
                                 // onPress={ _ => console.log('You touched me') }
@@ -365,7 +453,7 @@ export default class msglist extends React.Component {
                     this.state.listType === '系统提示' &&
 
                     <SwipeListView
-                        dataSource={ this.ds.cloneWithRows(this.state.listViewData) }
+                        dataSource={ this.ds.cloneWithRows(list) }
                         renderRow={ data => (
                             <TouchableHighlight
                                 onPress={ this.exitlogin }
@@ -425,7 +513,7 @@ export default class msglist extends React.Component {
 
 
                     <SwipeListView
-                        dataSource={ this.ds.cloneWithRows(this.state.listViewData) }
+                        dataSource={ this.ds.cloneWithRows(list) }
                         renderRow={ data => (
                             <TouchableHighlight
                                 // onPress={ _ => console.log('You touched me') }
@@ -520,12 +608,55 @@ export default class msglist extends React.Component {
             </View>
         );
     }
+    _renderIndexPath = ({ section, row }) => {
+        // alert(section+row);
+        var data=list[1];
+    return (
+        
+        <TouchableHighlight
+        onPress={ this.tomsg }
+        style={ styles.rowFront }
+        underlayColor={ '#AAA' }
+    >
+        <View>
+            <ListItem
+                style={ { width: ScaleSize(380), height: ScaleSize(70) } }
+                subtitle={
+                    <View style={ styles.subtitleView }>
+                        <View style={ { width: Dimensions.get('window').width * 4 / 6 } }>
+                            <Text style={ { fontSize: 12, top: ScaleSize(6) } }>{ data.subtitle }</Text>
+                        </View>
+                        <View style={ { width: Dimensions.get('window').width / 6, flexDirection: "column", right: ScaleSize(10), bottom: ScaleSize(20), alignItems: 'center' } }>
+                            <Text style={ styles.ratingText }>17:36</Text>
+                            <Badge value={ 3 } textStyle={ { color: 'orange' } } containerStyle={ { top: ScaleSize(4) } }></Badge>
+
+                        </View>
+                    </View>
+
+                }
+                // rightTitleStyle={style={   marginTop:-20,
+                //     marginRight:-20,  justifyContent: 'right',
+                //     alignItems: 'right',}}
+                key={ data.key }
+                leftAvatar={ { source: data.img } }
+                //   rightAvatar={ <MaterialCommunityIcons
+                //     name='greater-than'
+                //     color='#f50'
+                //     backgroundColor="#cccfff"
+                //     size={ 16 }
+                //      />}
+                title={ data.name }
+            />
+        </View>
+    </TouchableHighlight>
+    );
+  };
 }
 
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center',
+        // alignItems: 'center',
         flex: 1,
         backgroundColor: '#F0F0F0'
     },
@@ -710,6 +841,40 @@ const styles = StyleSheet.create({
     trash: {
         height: 25,
         width: 25,
+    },
+    item2: {
+        backgroundColor: '#aeffb1',
+        height: ScaleSize(70),
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation:5,//漂浮的效果
+        borderRadius:5,//圆角
+    },
+    text: {
+        color: '#444444',
+        fontSize: 20,
+    },
+    //侧滑菜单的样式
+    quickAContent:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        marginRight:15,
+        marginBottom:10,
+    },
+    quick:{
+        backgroundColor:"#ff1d49",
+        flex:1,
+        alignItems:'flex-end',//水平靠右
+        justifyContent:'center',//上下居中
+        width:100,
+        borderRadius:5,
+        elevation:5,//漂浮的效果
+
+    },
+    delete:{
+        color:"#d8fffa",
+        marginRight:30
     }
 
 });

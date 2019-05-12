@@ -60,7 +60,11 @@ const getTabBarIcon = (navigation, focused, tintColor) => {
     iconName = `home${focused ? '' : '-outline'}`;
     // We want to add badges to home tab icon
     // IconComponent = HomeIconWithBadge;
-  } else if (routeName === 'Details') {
+  } else if (routeName === 'MsgList') {
+    iconName = `email${focused ? '' : '-outline'}`;
+    IconComponent = HomeIconWithBadge;
+  }
+   else if (routeName === 'Details') {
     iconName = `cart${focused ? '' : '-outline'}`;
     IconComponent = HomeIconWithBadge;
   } else if (routeName === 'Cust') {
@@ -79,6 +83,9 @@ const RootStack = createBottomTabNavigator(
     },
     Details: {
       screen: DetailsScreen,
+    },
+    MsgList: {
+      screen: msglist,
     },
     Cust: {
       screen: Cust,
@@ -132,15 +139,15 @@ const OtherStack = createStackNavigator(
     MusicList: {
       screen: MusicList,
     },
-    MsgList: {
-      screen: msglist,
-    },
     Msgchart: {screen:imchart},
     chart: { screen: chart, }
   }, {
     defaultNavigationOptions: {
       headerStyle: {
-        height: 35,
+        activeTintColor: 'red',
+      inactiveTintColor: '#fff',
+        height: 40,
+        backgroundColor:'#3399ff'
       }
     }
   }

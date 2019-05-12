@@ -12,6 +12,7 @@ import { WSnackBar } from 'react-native-smart-tip';
 import { WModal } from 'react-native-smart-tip';
 import BouncingBalls from 'react-native-bouncing-ball';
 import img_arr from '../config/imgarr';
+const {width,height}=Dimensions.get('window');
 export default class HomeScreen extends React.Component {
   state = {
     loading: true,
@@ -233,7 +234,17 @@ export default class HomeScreen extends React.Component {
         //   }   
         />
         <View>
-          <Header
+        <SearchBar
+                    containerStyle={ style = { width: Dimensions.get("screen").width, height: height*1/6, borderRadius: 5, borderWidth: 1, borderColor: '#F0F0F0' } }
+                    inputContainerStyle={ style = { height: 20, borderRadius: 25, top: 0, backgroundColor: '#ffffff' } }
+                    inputStyle={ style = { fontSize: 12, height: 20 } }
+                    placeholder="请输入..."
+                    onChangeText={ this.updateSearch }
+                    value={ search }
+                    lightTheme={ true }
+                    clearIcon={ { icon: 'menu', color: 'gray' } }
+                />
+          {/* <Header
             containerStyle={ {
               backgroundColor: '#3399ff',
               justifyContent: 'space-around',
@@ -287,9 +298,9 @@ export default class HomeScreen extends React.Component {
                 this.runxyy("tomusic");
               } }
             /> }
-          />
+          /> */}
         </View>
-        <View style={ { height: ScaleSize(200), top: ScaleSize(-13) } }>
+        <View style={ { height:  height*1.5/6, top: ScaleSize(-13) } }>
           <Swiper
             style={ styles.swiper }          //样式
             height={ ScaleSize(200) }                   //组件高度
@@ -328,7 +339,7 @@ export default class HomeScreen extends React.Component {
             <Image source={ require('../../src/assets/images/contemplative-reptile.jpg') } style={ styles.img } />
           </Swiper>
         </View>
-        <View style={ { height: Dimensions.get('window').height * 4.1 / 10, } }>
+        <View style={ { height: height*2/6, } }>
           <ScrollView style={ styles.xyys }>
             <View style={ { flexDirection: 'row', marginBottom: 1, marginTop: 1 } }>
               { this.renderItem(1) }
@@ -461,7 +472,7 @@ const styles = StyleSheet.create({
   },
   xyys: {
     flexDirection: 'column',
-    height: Dimensions.get('window').height * 4.1 / 10,
+    height:  height*2/6,
     top: ScaleSize(20),
     marginLeft: ScaleSize(6),
     marginRight: ScaleSize(6),
