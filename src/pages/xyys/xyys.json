@@ -117,8 +117,8 @@
     },
     {
         "id": "xyy13",
-        "name": "测试",
-        "function": "test",
+        "name": "任务",
+        "function": "toTask",
         "icon": {
             "name": "pinwheel-outline",
             "size": 22,

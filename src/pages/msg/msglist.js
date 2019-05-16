@@ -7,6 +7,9 @@ import { red } from 'ansi-colors';
 import img_arr from '../../config/imgarr';
 import { LargeList } from "react-native-largelist-v3";
 import { ScaleSize } from 'react-native-scale-size';
+import ScrollableTabView, { DefaultTabBar, } from 'react-native-scrollable-tab-view';
+import FacebookTabBar from '../../commoen/FacebokTabBar';
+const {width,height}=Dimensions.get('window');
 const list = [
     {
         key: 1, name: '东北老宝',
@@ -227,8 +230,17 @@ export default class msglist extends React.Component {
         /* 2. Read the params from the navigation state */
         return (
             <View style={ styles.container }>
-
-                <View style={ styles.controls }>
+                <SearchBar
+                    containerStyle={ style = { width: Dimensions.get("screen").width, height: 50, borderRadius: 5, borderWidth: 1, borderColor: '#F0F0F0' } }
+                    inputContainerStyle={ style = { height: 20, borderRadius: 25, top: 0, backgroundColor: '#ffffff' } }
+                    inputStyle={ style = { fontSize: 12, height: 20 } }
+                    placeholder="请输入..."
+                    onChangeText={ this.updateSearch }
+                    value={ search }
+                    lightTheme={ true }
+                    clearIcon={ { icon: 'menu', color: 'gray' } }
+                />
+                    <View style={ styles.controls }>
                     <View style={ styles.switchContainer }>
                         { ['消息', '群消息', '通知', '系统提示'].map(type => (
                             <TouchableOpacity
@@ -256,16 +268,199 @@ export default class msglist extends React.Component {
                         )) }
                     </View>
                 </View>
-                <SearchBar
-                    containerStyle={ style = { width: Dimensions.get("screen").width, height: 50, borderRadius: 5, borderWidth: 1, borderColor: '#F0F0F0' } }
-                    inputContainerStyle={ style = { height: 20, borderRadius: 25, top: 0, backgroundColor: '#ffffff' } }
-                    inputStyle={ style = { fontSize: 12, height: 20 } }
-                    placeholder="请输入..."
-                    onChangeText={ this.updateSearch }
-                    value={ search }
-                    lightTheme={ true }
-                    clearIcon={ { icon: 'menu', color: 'gray' } }
-                />
+                {/* <ScrollableTabView
+      style={ {top:10} }
+        initialPage={ 1 }
+        renderTabBar={ () => <FacebookTabBar  /> }
+      >
+  <ScrollView tabLabel="消息" style={{height:height*4/6}}>
+          <View>
+          <LargeList
+        data={ data }
+        heightForSection={ () => 0}
+        renderSection={() => null}
+        heightForIndexPath={ () =>100}
+        renderIndexPath={ this._renderIndexPath }
+      />
+          </View>
+        </ScrollView>
+        <ScrollView tabLabel="群消息">
+          <SwipeListView
+                        dataSource={ this.ds.cloneWithRows(list) }
+                        renderRow={ data => (
+                            <TouchableHighlight
+                                // onPress={ _ => console.log('You touched me') }
+                                style={ styles.rowFront }
+
+                                underlayColor={ '#AAA' }
+                            >
+                                <View>
+                                    <ListItem
+                                        style={ { width: ScaleSize(380), height: ScaleSize(70) } }
+                                        subtitle={
+                                            <View style={ styles.subtitleView }>
+                                                <View style={ { width: Dimensions.get('window').width * 4 / 6 } }>
+                                                    <Text style={ { fontSize: 12, top: ScaleSize(6) } }>{ data.subtitle }</Text>
+                                                </View>
+                                                <View style={ { width: Dimensions.get('window').width / 6, flexDirection: "column", right: ScaleSize(10), bottom: ScaleSize(20), alignItems: 'center' } }>
+                                                    <Text style={ styles.ratingText }>17:36</Text>
+                                                    <Badge value={ 3 } textStyle={ { color: 'orange' } } containerStyle={ { top: ScaleSize(4) } }></Badge>
+
+                                                </View>
+                                            </View>
+
+                                        }
+                                        // rightTitleStyle={style={   marginTop:-20,
+                                        //     marginRight:-20,  justifyContent: 'right',
+                                        //     alignItems: 'right',}}
+                                        key={ data.key } account-group
+                                        leftAvatar={ <Avatar rounded icon={ { name: 'account-group', type: 'material-community', color: '#00E5EE' } } /> }
+                                        //   rightAvatar={ <MaterialCommunityIcons
+                                        //     name='greater-than'
+                                        //     color='#f50'
+                                        //     backgroundColor="#cccfff"
+                                        //     size={ 16 }
+                                        //      />}
+                                        title={ '云创新业务开发部' }
+                                    />
+                                </View>
+                            </TouchableHighlight>
+                        ) }
+                        renderHiddenRow={ (data, secId, rowId, rowMap) => (
+                            <View style={ styles.rowBack }>
+                                <Text>Left</Text>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnLeft] } onPress={ _ => this.closeRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>已读</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnRight] } onPress={ _ => this.deleteRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>删除</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) }
+                        leftOpenValue={ 75 }
+                        rightOpenValue={ -150 }
+                    />
+      
+        </ScrollView>
+        <ScrollView tabLabel="通知" >
+          <View>
+         
+          <SwipeListView
+                        dataSource={ this.ds.cloneWithRows(list) }
+                        renderRow={ data => (
+                            <TouchableHighlight
+                                // onPress={ _ => console.log('You touched me') }
+                                style={ styles.rowFront }
+                                underlayColor={ '#AAA' }
+                            >
+                                <View>
+                                    <ListItem
+                                        style={ { width: ScaleSize(380), height: ScaleSize(70) } }
+                                        subtitle={
+                                            <View style={ styles.subtitleView }>
+                                                <View style={ { width: Dimensions.get('window').width * 4 / 6 } }>
+                                                    <Text style={ { fontSize: 12, top: ScaleSize(6) } }>{ data.subtitle }</Text>
+                                                </View>
+                                                <View style={ { width: Dimensions.get('window').width / 6, flexDirection: "column", right: ScaleSize(10), bottom: ScaleSize(20), alignItems: 'center' } }>
+                                                    <Text style={ styles.ratingText }>17:36</Text>
+                                                    <Badge value={ 3 } textStyle={ { color: 'orange' } } containerStyle={ { top: ScaleSize(4) } }></Badge>
+
+                                                </View>
+                                            </View>
+
+                                        }
+                                        // rightTitleStyle={style={   marginTop:-20,
+                                        //     marginRight:-20,  justifyContent: 'right',
+                                        //     alignItems: 'right',}}
+                                        key={ data.key }
+                                        leftAvatar={ <Avatar rounded icon={ { name: 'bell-outline', type: 'material-community', color: '#f50' } } /> }
+                                        //   rightAvatar={ <MaterialCommunityIcons
+                                        //     name='greater-than'
+                                        //     color='#f50'
+                                        //     backgroundColor="#cccfff"
+                                        //     size={ 16 }
+                                        //      />}
+                                        title={ 'ADMIN' }
+                                    />
+                                </View>
+                            </TouchableHighlight>
+                        ) }
+                        renderHiddenRow={ (data, secId, rowId, rowMap) => (
+                            <View style={ styles.rowBack }>
+                                <Text>Left</Text>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnLeft] } onPress={ _ => this.closeRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>已读</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnRight] } onPress={ _ => this.deleteRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>删除</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) }
+                        leftOpenValue={ 75 }
+                        rightOpenValue={ -150 }
+                    />
+          </View>
+        </ScrollView>
+        <ScrollView tabLabel="系统提示">
+          <View>
+          <SwipeListView
+                        dataSource={ this.ds.cloneWithRows(list) }
+                        renderRow={ data => (
+                            <TouchableHighlight
+                                onPress={ this.exitlogin }
+                                style={ styles.rowFront }
+                                underlayColor={ '#AAA' }
+                            >
+                                <View>
+                                    <ListItem
+                                        style={ { width: ScaleSize(380), height: ScaleSize(70) } }
+                                        subtitle={
+                                            <View style={ styles.subtitleView }>
+                                                <View style={ { width: Dimensions.get('window').width * 4 / 6 } }>
+                                                    <Text style={ { fontSize: 12, top: ScaleSize(6) } }>{ data.subtitle }</Text>
+                                                </View>
+                                                <View style={ { width: Dimensions.get('window').width / 6, flexDirection: "column", right: ScaleSize(10), bottom: ScaleSize(20), alignItems: 'center' } }>
+                                                    <Text style={ styles.ratingText }>17:36</Text>
+                                                    <Badge value={ 3 } textStyle={ { color: 'orange' } } containerStyle={ { top: ScaleSize(4) } }></Badge>
+
+                                                </View>
+                                            </View>
+
+                                        }
+                                        // rightTitleStyle={style={   marginTop:-20,
+                                        //     marginRight:-20,  justifyContent: 'right',
+                                        //     alignItems: 'right',}}
+                                        key={ data.key }
+                                        leftAvatar={ <Avatar rounded icon={ { name: 'alert', type: 'material-community', color: 'red' } } /> }
+                                        //   rightAvatar={ <MaterialCommunityIcons
+                                        //     name='greater-than'
+                                        //     color='#f50'
+                                        //     backgroundColor="#cccfff"
+                                        //     size={ 16 }
+                                        //      />}
+                                        title={ '小莫' }
+                                    />
+                                </View>
+                            </TouchableHighlight>
+                        ) }
+                        renderHiddenRow={ (data, secId, rowId, rowMap) => (
+                            <View style={ styles.rowBack }>
+                                <Text>Left</Text>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnLeft] } onPress={ _ => this.closeRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>已读</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={ [styles.backRightBtn, styles.backRightBtnRight] } onPress={ _ => this.deleteRow(rowMap, `${secId}${rowId}`) }>
+                                    <Text style={ styles.backTextWhite }>删除</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) }
+                        leftOpenValue={ 75 }
+                        rightOpenValue={ -150 }
+                    />
+          </View>
+        </ScrollView>
+      </ScrollableTabView> */}
+   
                  {/* <View>
                  <SwipeableFlatList
                     //1数据的获取和渲染
@@ -331,7 +526,7 @@ export default class msglist extends React.Component {
         renderIndexPath={ this._renderIndexPath }
       />
       </View> */}
-                {
+  {
                     this.state.listType === '消息' &&
 
                     <SwipeListView
@@ -567,7 +762,7 @@ export default class msglist extends React.Component {
                         leftOpenValue={ 75 }
                         rightOpenValue={ -150 }
                     />
-                }
+                } 
 
                 {/* <ScrollView tabLabel="首页" style={ styles.list }>
                     <View style={ { top: 5 } }>
@@ -875,6 +1070,18 @@ const styles = StyleSheet.create({
     delete:{
         color:"#d8fffa",
         marginRight:30
-    }
+    },
+    card: {
+        borderWidth: 1,
+        backgroundColor: '#fff',
+        borderColor: 'rgba(0,0,0,0.1)',
+        margin: 5,
+        height: 400,
+        padding: 15,
+        shadowColor: '#ccc',
+        shadowOffset: { width: 2, height: 2, },
+        shadowOpacity: 0.5,
+        shadowRadius: 3,
+      }
 
 });

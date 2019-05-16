@@ -1,261 +1,162 @@
 import React from 'react';
-import { Image, Platform, StyleSheet, Modal, Text, View, ScrollView, TouchableHighlight, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Image, Platform, StyleSheet, Modal, Text, View, ScrollView, TouchableHighlight, TouchableOpacity, AsyncStorage,Animated,Dimensions} from 'react-native';
+import ScrollableTabView from 'react-native-scrollable-tab-view';
+import TabBar from "react-native-underline-tabbar";
 import { Card, ListItem, Button, Icon, Badge, Avatar, withBadge, SocialIcon, Header, SearchBar, Divider, Overlay } from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Swiper from 'react-native-swiper';
 import xyys from './xyys/xyys';
 import colorjson from './xyys/colors';
-import DeviceStorage from '../config/DeviceStorage'
-export default class Ratb extends React.Component {
+const {width,height}=Dimensions.get('window');
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+    fontSize: 28,
+  },
+});
+
+const Page = ({label, text = ''}) => (
+  <View style={styles.container}>
+    <Text style={styles.welcome}>
+      {label}
+    </Text>
+    <Text style={styles.instructions}>
+      {text}
+    </Text>
+  </View>
+);
+
+const iconsSet = {
+  hot: require('../assets/images/play3.png'),
+  trending: require('../assets/images/play3.png'),
+  fresh: require('../assets/images/play3.png'),
+  funny: require('../assets/images/play3.png'),
+  movieAndTv: require('../assets/images/play3.png'),
+  sport: require('../assets/images/play3.png'),
+};
+
+const Tab = ({ tab, page, isTabActive, onPressHandler, onTabLayout, styles }) => {
+  const { label, icon } = tab;
+  const style = {
+    marginHorizontal: 20,
+    paddingVertical: 10,
+  };
+  const containerStyle = {
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: "#3399ff",
+    opacity: styles.opacity,
+    transform: [{ scale: styles.opacity }],
+  };
+  const textStyle = {
+    color: styles.textColor,
+    fontWeight: '600',
+  };
+  const iconStyle = {
+    tintColor: styles.textColor,
+    resizeMode: 'contain',
+    width: 22,
+    height: 22,
+    marginLeft: 10,
+  };
+  return (
+    <TouchableOpacity style={style} onPress={onPressHandler} onLayout={onTabLayout} key={page}>
+      <Animated.View style={containerStyle}>
+        <Animated.Text style={textStyle}>{label}</Animated.Text>
+        <Animated.Image style={iconStyle} source={icon} />
+      </Animated.View>
+    </TouchableOpacity>
+  );
+};
+
+export default class Rtab extends React.Component  {
   state = {
-    loading: true,
-    users: [],
     search: '',
-    isVisible: true,
-    modalVisible: false
   }
+  _scrollX = new Animated.Value(0);
+  // 6 is a quantity of tabs
+  interpolators = Array.from({ length: 6 }, (_, i) => i).map(idx => ({
+    scale: this._scrollX.interpolate({
+      inputRange: [idx - 1, idx, idx + 1],
+      outputRange: [1, 1.2, 1],
+      extrapolate: 'clamp',
+    }),
+    opacity: this._scrollX.interpolate({
+      inputRange: [idx - 1, idx, idx + 1],
+      outputRange: [0.9, 1, 0.9],
+      extrapolate: 'clamp',
+    }),
+    textColor: this._scrollX.interpolate({
+      inputRange: [idx - 1, idx, idx + 1],
+      outputRange: ['#000', '#fff', '#000'],
+    }),
+    backgroundColor: this._scrollX.interpolate({
+      inputRange: [idx - 1, idx, idx + 1],
+      outputRange: ['rgba(0,0,0,0.1)', '#000', 'rgba(0,0,0,0.1)'],
+      extrapolate: 'clamp',
+    }),
+  }));
   updateSearch = search => {
     this.setState({ search });
   };
-
-  test = () => {
-    var user = {
-      username: 'admin',
-      pass: ''
-    }
-    DeviceStorage.save("user", "fdghjefgjg");
-    alert("欢迎来到云平台!")
-    //     return (<View>
-    //       <Overlay
-    //   isVisible={this.state.isVisible}
-    //   windowBackgroundColor="rgba(255, 255, 255, .5)"
-    //   overlayBackgroundColor="red"
-    //   width="auto"
-    //   height="auto"
-    // >
-    //   <Text>Hello from Overlay!</Text>
-    // </Overlay>;
-    //     </View>);
-  };
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
-  exitlogin = () => {
-    AsyncStorage.removeItem("userToken");
-    this.props.navigation.navigate('Auth');
-  }
-  toMy = () => {
-    this.props.navigation.navigate('Customer');
-  }
-  tovideo = () => {
-    this.props.navigation.navigate('videodetail');
-  }
-  tomenu = () => {
-    this.props.navigation.navigate('Menu');
-  }
-  runxyy = (xyy) => {
-    switch (xyy) {
-      case 'test':
-        return this.test();
-      case 'toMy':
-        return this.toMy();
-      case 'exitlogin':
-        return this.exitlogin();
-      case 'setModalVisible':
-        return this.setModalVisible();
-      case 'videodetail':
-        return this.tovideo();
-      case 'tomenu':
-        return this.tomenu();
-      default:
-        return this.test();
-    }
-  }
-  renderItem(line) {
-    var linelength = line * 6;
-    var lineindex = 0;
-    if (line == 1) {
-      lineindex = 0;
-    } else {
-      lineindex = (line - 1) * 6;
-    }
-    // 数组
-    var itemAry = [];
-    // 颜色数组
-    var colorAry = ['gray', 'green', 'blue', 'yellow', 'black', 'orange'];
-    // 遍历
-    for (let index = lineindex; index < linelength; index++) {
-      const xyy = xyys[index];
-      itemAry.push(
-        <View style={ styles.xyyicon }>
-          <MaterialCommunityIcons name={ xyy.icon.name } size={ xyy.icon.size } color={ colorjson[Math.floor(Math.random() * colorjson.length)] }
-            onPress={ () => {
-              this.runxyy(xyy.function);
-            } }
-          />
-          <Text style={ { fontSize: 12, fontWeight: 'bold', top: 5 } }>
-            { xyy.name }
-          </Text>
-        </View>
-      );
-    }
-    return itemAry;
-  }
   render() {
     const { search } = this.state;
-    /* 2. Read the params from the navigation state */
     return (
-      <View style={ { flex: 1, flexDirection: 'column', backgroundColor: '#FFFFFF' } }>
-        <View>
-          <Header
-            containerStyle={ {
-              backgroundColor: '#3399ff',
-              justifyContent: 'space-around',
-              height: 54,
-              top: -10
-            } }
-            // backgroundImage={ require('../../src/assets/images/contemplative-reptile.jpg')}
-            leftComponent={ <MaterialCommunityIcons name={ 'menu' } size={ 28 } color={ '#fff' }
-              onPress={ () => {
-                this.runxyy("tomenu");
-              } }
+      <View style={[styles.container]}>
+         <SearchBar
+                    containerStyle={ style = { width: Dimensions.get("screen").width, height: height*1/12, borderRadius: 5, borderWidth: 1, borderColor: '#F0F0F0' } }
+                    inputContainerStyle={ style = { height: 20, borderRadius: 25, top: 0, backgroundColor: '#ffffff' } }
+                    inputStyle={ style = { fontSize: 12, height: 20 } }
+                    placeholder="请输入..."
+                    onChangeText={ this.updateSearch }
+                    value={ search }
+                    lightTheme={ true }
+                    clearIcon={ { icon: 'menu', color: 'gray' } }
+                />
+        <ScrollableTabView
+          renderTabBar={() => (
+            <TabBar
+              underlineColor="#000"
+              tabBarStyle={{ backgroundColor: "#fff", borderTopColor: '#d2d2d2', borderTopWidth: 1 }}
+              renderTab={(tab, page, isTabActive, onPressHandler, onTabLayout) => (
+                <Tab
+                  key={page}
+                  tab={tab}
+                  page={page}
+                  isTabActive={isTabActive}
+                  onPressHandler={onPressHandler}
+                  onTabLayout={onTabLayout}
+                  styles={this.interpolators[page]}
+                />
+              )}
             />
-            }
-            centerComponent={ <SearchBar
-              containerStyle={ style = { width: 260, height: 35, top: -3, borderRadius: 2.5, borderWidth: 1, borderColor: '#3399ff',backgroundColor:'#3399ff'} }
-              inputContainerStyle={ style = { height: 20, borderRadius: 25, top: -7, backgroundColor: '#ffffff' } }
-              inputStyle={ style = { fontSize: 12, height: 20 } }
-              placeholder="请输入..."
-              onChangeText={ this.updateSearch }
-              value={ search }
-              lightTheme={ true }
-              clearIcon={ { icon: 'menu', color: 'gray' } }
-            /> }
-            rightComponent={ { icon: 'home', color: '#fff', size: 28 } }
-          />
-        </View>
-        <View style={ { height: 200, top: -11 } }>
-          <Swiper
-            style={ styles.swiper }          //样式
-            height={ 200 }                   //组件高度
-            loop={ true }                    //如果设置为false，那么滑动到最后一张时，再次滑动将不会滑到第一张图片。
-            autoplay={ true }                //自动轮播
-            autoplayTimeout={ 4 }                //每隔4秒切换
-            horizontal={ true }              //水平方向，为false可设置为竖直方向
-            paginationStyle={ { bottom: 10 } } //小圆点的位置：距离底部10px
-            showsButtons={ false }           //为false时不显示控制按钮
-            showsPagination={ true }       //为false不显示下方圆点
-            dot={ <View style={ {           //未选中的圆点样式
-              backgroundColor: 'rgba(0,0,0,.2)',
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              marginLeft: 10,
-              marginRight: 9,
-              marginTop: -15,
-            } } /> }
-            activeDot={ <View style={ {    //选中的圆点样式
-              backgroundColor: '#3399ff',
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              marginLeft: 10,
-              marginRight: 9,
-              marginTop: -15,
-            } } /> }
-
-          >
-            <Image source={ require('../../src/assets/images/yylogo.jpg') } style={ styles.img } />
-            <Image source={ require('../../src/assets/images/u8.jpg') } style={ styles.img } />
-            <Image source={ require('../../src/assets/images/u10.jpg') } style={ styles.img } />
-            <Image source={ require('../../src/assets/images/u6.jpg') } style={ styles.img } />
-            <Image source={ require('../../src/assets/images/u3.jpg') } style={ styles.img } />
-            <Image source={ require('../../src/assets/images/contemplative-reptile.jpg') } style={ styles.img } />
-          </Swiper>
-        </View>
-        <View style={ { height: 270 } }>
-          <ScrollView style={ styles.xyys }>
-            <View style={ { flexDirection: 'row' } }>
-              { this.renderItem(1) }
-            </View>
-            <View style={ { flexDirection: 'row' } }>
-              { this.renderItem(2) }
-            </View>
-            <View style={ { flexDirection: 'row' } }>
-              { this.renderItem(3) }
-            </View>
-            <View style={ { flexDirection: 'row' } }>
-              { this.renderItem(1) }
-            </View>
-            <View style={ { flexDirection: 'row' } }>
-              { this.renderItem(3) }
-            </View>
-          </ScrollView>
-        </View>
-        <View style={ { marginTop: 22 } }>
-          <Modal
-            animationType="slide"
-            transparent={ false }
-            visible={ this.state.modalVisible }
-            onRequestClose={ () => {
-              alert("Modal has been closed.");
-            } }
-            presentationStyle='overFullScreen'
-          >
-            <View style={ { marginTop: 22 } }>
-              <View>
-                <Image
-                  source={ require('../../src/assets/images/contemplative-reptile.jpg') }
-                  style={ { width: 300, height: 400, margin: 20 } }
-                ></Image>
-                <TouchableHighlight
-                  onPress={ () => {
-                    this.setModalVisible(!this.state.modalVisible);
-                  } }
-                >
-                  <Text>Hide Modal</Text>
-                </TouchableHighlight>
-              </View>
-            </View>
-          </Modal>
-        </View>
-
+          )}
+          onScroll={(x) => this._scrollX.setValue(x)}
+        >
+          <Page tabLabel={{label: "Hot", icon: iconsSet.hot}} label="Page #1 Hot" text="You can pass your own views to TabBar!"/>
+          <Page tabLabel={{label: "Trending", icon: iconsSet.trending}} label="Page #2 Trending" text="Yehoo!!!"/>
+          <Page tabLabel={{label: "Fresh", icon: iconsSet.fresh}} label="Page #3 Fresh" text="Hooray!"/>
+          <Page tabLabel={{label: "Funny", icon: iconsSet.funny}} label="Page #4 Funny"/>
+          <Page tabLabel={{label: "Movie & TV", icon: iconsSet.movieAndTv}} label="Page #5 Movie & TV"/>
+          <Page tabLabel={{label: "Sport", icon: iconsSet.sport}} label="Page #6 Sport"/>
+        </ScrollableTabView>
       </View>
     );
   }
 }
-
-
-const styles = StyleSheet.create({
-
-  swiper: {
-    backgroundColor: 'gray',
-    borderWidth: 1,
-    borderColor: 'gray'
-  },
-  img: {
-    top: 2,
-    marginBottom: 5,
-    width: 370,
-    height: 195,
-  },
-  xyys: {
-    flexDirection: 'column',
-    height: 270,
-    top: 20,
-    marginLeft: 6,
-    marginRight: 6,
-    borderWidth: 1,
-    borderRadius: 5,
-    borderColor: '#C7C7C7',
-    backgroundColor: '#FFF'
-  },
-  xyyicon: {
-    marginTop: 5,
-    marginLeft: 6,
-    width: 50,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-});

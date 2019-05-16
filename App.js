@@ -15,7 +15,8 @@ import chart from './src/pages/customer/chart';
 import imchart from './src/pages/msg/imchart'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import msglist from './src/pages/msg/msglist';
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from 'react-native-splash-screen';
+import TaskView from './src/pages/Task/TaskView';
 class IconWithBadge extends React.Component {
   render() {
     const { name, badgeCount, color, size } = this.props;
@@ -104,9 +105,9 @@ const RootStack = createBottomTabNavigator(
     }),
     tabBarOptions: {
       activeTintColor: 'red',
-      inactiveTintColor: '#fff',
+      inactiveTintColor: 'gray',
       style: {
-        backgroundColor: '#3399ff',
+        backgroundColor: '#fff',
         height: 50,
         shadowColor: 'red',
         shadowOffset: { width: 4, height: 4 },
@@ -140,14 +141,15 @@ const OtherStack = createStackNavigator(
       screen: MusicList,
     },
     Msgchart: {screen:imchart},
-    chart: { screen: chart, }
+    chart: { screen: chart, },
+    TaskView:{screen: TaskView,}
   }, {
     defaultNavigationOptions: {
       headerStyle: {
         activeTintColor: 'red',
       inactiveTintColor: '#fff',
         height: 40,
-        backgroundColor:'#3399ff'
+        backgroundColor:'#fff'
       }
     }
   }

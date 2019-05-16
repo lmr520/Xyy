@@ -1,0 +1,100 @@
+[
+    {
+        "id": "xyy1",
+        "name": "测试",
+        "function": "test",
+        "icon": {
+            "name": "lvjia",
+            "size": 22,
+            "color": "#EE0000"
+        }
+    },
+    {
+        "id": "xyy2",
+        "name": "退出登录",
+        "function": "exitlogin",
+        "icon": {
+            "name": "yonghushezhi",
+            "size": 22,
+            "color": "teal"
+        }
+    },
+    {
+        "id": "xyy3",
+        "name": "个人中心",
+        "function": "toMy",
+        "icon": {
+            "name": "yonghu",
+            "size": 22,
+            "color": "#00E5EE"
+        }
+    },{
+        "id": "xyy10",
+        "name": "城市",
+        "function": "gocity",
+        "icon": {
+            "name": "xuexiao",
+            "size": 22,
+            "color": "#0099ff"
+        }
+    },
+    {
+        "id": "xyy6",
+        "name": "友圈",
+        "function": "tomusic",
+        "icon": {
+            "name": "weixin",
+            "size": 22,
+            "color": "teal"
+        }
+    },
+    {
+        "id": "xyy5",
+        "name": "视频",
+        "function": "videodetail",
+        "icon": {
+            "name": "bofang",
+            "size": 22,
+            "color": "green"
+        }
+    },
+    {
+        "id": "xyy7",
+        "name": "测试",
+        "function": "gom2",
+        "icon": {
+            "name": "yinle",
+            "size": 22,
+            "color": "#0099ff"
+        }
+    },
+    {
+        "id": "xyy8",
+        "name": "购物",
+        "function": "show3",
+        "icon": {
+            "name": "wanggou",
+            "size": 22,
+            "color": "teal"
+        }
+    },
+    {
+        "id": "xyy9",
+        "name": "通讯录",
+        "function": "gomen",
+        "icon": {
+            "name": "tongxunlu",
+            "size": 22,
+            "color": "#00E5EE"
+        }
+    },{
+        "id": "xyy4",
+        "name": "小应用列表",
+        "function": "setModalVisible",
+        "icon": {
+            "name": "qitazonghe",
+            "size": 22,
+            "color": "#0099ff"
+        }
+    }  
+]
