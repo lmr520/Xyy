@@ -17,6 +17,31 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import msglist from './src/pages/msg/msglist';
 import SplashScreen from 'react-native-splash-screen';
 import TaskView from './src/pages/Task/TaskView';
+import Menlist from './src/pages/men/menlist';
+/***
+ **************************************************************
+ *                                                            *
+ *   .=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-.       *
+ *    |                     ______                     |      *
+ *    |                  .-"      "-.                  |      *
+ *    |                 /            \                 |      *
+ *    |     _          |              |          _     |      *
+ *    |    ( \         |,  .-.  .-.  ,|         / )    |      *
+ *    |     > "=._     | )(__/  \__)( |     _.=" <     |      *
+ *    |    (_/"=._"=._ |/     /\     \| _.="_.="\_)    |      *
+ *    |           "=._"(_     ^^     _)"_.="           |      *
+ *    |               "=\__|IIIIII|__/="               |      *
+ *    |              _.="| \IIIIII/ |"=._              |      *
+ *    |    _     _.="_.="\          /"=._"=._     _    |      *
+ *    |   ( \_.="_.="     `--------`     "=._"=._/ )   |      *
+ *    |    > _.="                            "=._ <    |      *
+ *    |   (_/                                    \_)   |      *
+ *    |                                                |      *
+ *    '-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-='      *
+ *                                                            *
+ *           LASCIATE OGNI SPERANZA, VOI CH'ENTRATE           *
+ **************************************************************
+ */
 class IconWithBadge extends React.Component {
   render() {
     const { name, badgeCount, color, size } = this.props;
@@ -31,7 +56,7 @@ class IconWithBadge extends React.Component {
               position: 'absolute',
               right: -6,
               top: -3,
-              backgroundColor: 'red',
+              backgroundColor: '#ff6600',
               borderRadius: 6,
               width: 12,
               height: 12,
@@ -104,12 +129,12 @@ const RootStack = createBottomTabNavigator(
 
     }),
     tabBarOptions: {
-      activeTintColor: 'red',
+      activeTintColor: '#ff6600',
       inactiveTintColor: 'gray',
       style: {
         backgroundColor: '#fff',
         height: 50,
-        shadowColor: 'red',
+        shadowColor: '#ff6600',
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 0.8,
         shadowRadius: 6,
@@ -142,7 +167,8 @@ const OtherStack = createStackNavigator(
     },
     Msgchart: {screen:imchart},
     chart: { screen: chart, },
-    TaskView:{screen: TaskView,}
+    TaskView:{screen: TaskView,},
+    Menlist:{screen: Menlist,}
   }, {
     defaultNavigationOptions: {
       headerStyle: {

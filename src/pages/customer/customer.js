@@ -9,18 +9,18 @@ import DeviceStorage from '../../config/DeviceStorage'
 export default class customer extends React.Component {
     static navigationOptions = ({ navigation }) => {
     return {
-        headerLeft:(
-
-            <MaterialCommunityIcons
-              raised
-              name='keyboard-backspace'
-              type='font-awesome'
-              color='#f50'
-              backgroundColor="#cccfff"
-              size={ 25 }
-              onPress={ navigation.getParam('back') } />
-         
-        ),
+      headerLeft: (
+        <TouchableOpacity
+        onPress={navigation.getParam('back')}
+        >
+        <MaterialCommunityIcons
+            raised
+            name='chevron-left'
+            color='#f50'
+            backgroundColor="#cccfff"
+            size={ 30} />
+            </TouchableOpacity>
+    ),
       headerTitle: (
         <View style={{width: Dimensions.get("screen").width*2/3, alignItems: 'center', justifyContent: 'center' }  }>
                 {/* <MaterialCommunityIcons

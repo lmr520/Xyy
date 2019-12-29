@@ -9,7 +9,8 @@ import {
   Button,
   Platform,
   AsyncStorage,
-  CameraRoll
+  CameraRoll,
+  TouchableOpacity
 } from 'react-native'
 
 var RNFS = require('react-native-fs')
@@ -176,17 +177,17 @@ export default class imchart extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
-
+        <TouchableOpacity
+        onPress={navigation.getParam('back')}
+        >
         <MaterialCommunityIcons
-          raised
-          name='reply'
-          type='font-awesome'
-          color='#f50'
-          backgroundColor="#cccfff"
-          size={ 25 }
-          onPress={ navigation.getParam('back') }
-        />
-      ),
+            raised
+            name='chevron-left'
+            color='#f50'
+            backgroundColor="#cccfff"
+            size={ 30} />
+            </TouchableOpacity>
+    ),
       headerTitle: (
         <View style={ { width: Dimensions.get("screen").width * 2 / 3, alignItems: 'center', justifyContent: 'center' } }>
           {/* <MaterialCommunityIcons

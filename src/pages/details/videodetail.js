@@ -61,14 +61,16 @@ export default class videodetail extends React.Component {
     static navigationOptions = ({ navigation }) => {
         return {
             headerLeft: (
+                <TouchableOpacity
+                onPress={navigation.getParam('back')}
+                >
                 <MaterialCommunityIcons
                     raised
-                    name='keyboard-backspace'
-                    type='font-awesome'
+                    name='chevron-left'
                     color='#f50'
                     backgroundColor="#cccfff"
-                    size={ 25 }
-                    onPress={ navigation.getParam('back') } />
+                    size={ 30} />
+                    </TouchableOpacity>
             ),
             headerTitle: (
                 <View style={ { width: Dimensions.get("screen").width * 2 / 3, alignItems: 'center', justifyContent: 'center' } }>
@@ -116,7 +118,7 @@ export default class videodetail extends React.Component {
     };
     componentWillMount() {
         this.props.navigation.setParams({ back: this._signInAsync, exitlogin: this.exitlogin });
-        Orientation.lockToLandscape();
+        // Orientation.lockToLandscape();默认横屏 
     }
     /// -------Video组件回调事件-------
 
