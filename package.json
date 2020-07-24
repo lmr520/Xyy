@@ -9,7 +9,7 @@
   "dependencies": {
     "aurora-imui-react-native": "^0.14.0",
     "axios": "^0.18.0",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.19",
     "pinyin": "^2.9.0",
     "query-string": "^6.5.0",
     "react": "16.8.3",
